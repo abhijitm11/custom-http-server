@@ -14,12 +14,13 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User createUser(String name, String email) {
+    public void createUser(String name, String email) {
         String id = IdGenerator.generateId();
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
 
-        User user = new User(id, name, email);
         userRepository.save(user);
-        return user;
     }
 
     public User getUser(String id) {

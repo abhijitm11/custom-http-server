@@ -42,7 +42,7 @@ public class HttpRequestParser {
         String line;
         while (!(line = reader.readLine()).isEmpty()) {
 
-            System.out.println("Header: " + line);              // Host: localhost:8080
+            // System.out.println("Header: " + line);              // Host: localhost:8080
 
             // Input:  "Host: localhost:8080"
             // Output: ["Host", "localhost:8080"]
@@ -62,6 +62,7 @@ public class HttpRequestParser {
             reader.read(bodyChars, 0, contentLength);
 
             body = new String(bodyChars);
+            Map<String, String> parsedBody = parseBody(body);
         }
 
         return new HttpRequest(
@@ -95,6 +96,19 @@ public class HttpRequestParser {
         }
         return params;
 
+    }
+
+    private Map<String, String> parseBody(String body) {
+        Map<String, String> parsedBody = new HashMap<>();
+        if(body.isEmpty()) {
+            return parsedBody;
+        }
+
+        String[] pairs = body.split("&");
+        for(String pair: pairs) {
+            parsedBody.put(pair.split("=")[0], pair.split("=")[1]);
+        }
+        return parsedBody;
     }
 
 }

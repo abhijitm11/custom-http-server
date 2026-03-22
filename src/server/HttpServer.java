@@ -8,9 +8,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class HttpServer {
+    private final Router router;
+
+    public HttpServer(Router router) {
+        this.router = router;
+    }
 
     public void start(int port) {
-
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Server started on port " + port);
             while (true) {
@@ -27,43 +31,25 @@ public class HttpServer {
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 OutputStream out = socket.getOutputStream()
         ) {
-            String requestLine = readRequest(in);
-            String response = processRequest(requestLine);
-            writeResponse(out, response);
+            // Parse request
+            HttpRequestParser parser = new HttpRequestParser();
+            HttpRequest request = parser.parse(in);
+
+            if (request == null) {
+                socket.close();
+                return;
+            }
+
+            // Route Request
+            String response = router.route(request);
+
+            // Send response
+            out.write(response.getBytes());
+            out.flush();
 
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private String readRequest(BufferedReader in) throws IOException {
-        String requestLine = in.readLine();
-        System.out.println("Request: " + requestLine);
-
-        // Read headers (for now just consume them)
-        String line;
-        while (!(line = in.readLine()).isEmpty()) {
-            System.out.println(line);
-        }
-
-        return requestLine;
-    }
-
-    private String processRequest(String requestLine) {
-        // For now, ignore actual parsing
-        return "Hello World";
-    }
-
-    private void writeResponse(OutputStream out, String body) throws IOException {
-        String response =
-                "HTTP/1.1 200 OK\r\n" +
-                        "Content-Type: text/plain\r\n" +
-                        "Content-Length: " + body.length() + "\r\n" +
-                        "\r\n" +
-                        body;
-
-        out.write(response.getBytes());
-        out.flush();
     }
 }
