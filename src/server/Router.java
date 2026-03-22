@@ -14,7 +14,7 @@ public class Router {
         String path = request.getPath();
 
         if(method.equals("GET") && path.equals("/users")) {
-            String body = userController.getAllUsers();
+            String body = userController.getUsers(request.getQueryParams());
             return buildResponse(200, body);
         }
 

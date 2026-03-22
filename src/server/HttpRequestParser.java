@@ -25,7 +25,7 @@ public class HttpRequestParser {
         }
 
         // Transformation 1: Split request line
-        String[] parts = requestLine.split(" ");
+        String[] parts = requestLine.split(" ");               // GET /users?id=123
 
         String method = parts[0];             // "GET"
         String fullPath = parts[1];           // "/users?name=abhi&age=25"
@@ -83,7 +83,6 @@ public class HttpRequestParser {
         }
 
         String query = fullPath.split("\\?")[1];       // "name=abhi&age=25"
-
         String[] pairs = query.split("&");            // ["name=abhi", "age=25"]
 
         for(String pair: pairs) {

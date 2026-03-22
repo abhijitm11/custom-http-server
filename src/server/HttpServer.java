@@ -39,7 +39,6 @@ public class HttpServer {
                 socket.close();
                 return;
             }
-
             // Route Request
             String response = router.route(request);
 

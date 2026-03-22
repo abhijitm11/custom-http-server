@@ -17,6 +17,7 @@ public class UserService {
     public void createUser(String name, String email) {
         String id = IdGenerator.generateId();
         User user = new User();
+        user.setId(id);
         user.setName(name);
         user.setEmail(email);
 
