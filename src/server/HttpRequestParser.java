@@ -62,7 +62,6 @@ public class HttpRequestParser {
             reader.read(bodyChars, 0, contentLength);
 
             body = new String(bodyChars);
-            Map<String, String> parsedBody = parseBody(body);
         }
 
         return new HttpRequest(
@@ -70,7 +69,8 @@ public class HttpRequestParser {
                 path,
                 headers,
                 queryParams,
-                body.toString()
+                new HashMap<>(),
+                body
         );
     }
 
@@ -95,19 +95,6 @@ public class HttpRequestParser {
         }
         return params;
 
-    }
-
-    private Map<String, String> parseBody(String body) {
-        Map<String, String> parsedBody = new HashMap<>();
-        if(body.isEmpty()) {
-            return parsedBody;
-        }
-
-        String[] pairs = body.split("&");
-        for(String pair: pairs) {
-            parsedBody.put(pair.split("=")[0], pair.split("=")[1]);
-        }
-        return parsedBody;
     }
 
 }

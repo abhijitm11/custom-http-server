@@ -66,4 +66,12 @@ public class UserController {
         }
         return parsedBody;
     }
+
+    public String getUserById(String id) {
+        User user = userService.getUserById(id);
+        if(user == null) {
+            return "User not found!";
+        }
+        return user.toString();
+    }
 }

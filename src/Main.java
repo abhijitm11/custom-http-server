@@ -9,24 +9,27 @@ import service.UserService;
 public class Main {
     public static void main(String[] args) {
 
-
-        // 🔹 Repository
         UserRepository userRepo = new InMemoryUserRepository();
-
-        // 🔹 Service
         UserService userService = new UserService(userRepo);
-
-        // 🔹 Controller
         UserController userController = new UserController(userService);
 
+        Router router = new Router();
 
-        userService.createUser("Hailey", "hailey@test.com");
-        userService.createUser("Claire", "claire@test.com");
+        router.addRoute("GET", "/users", (req) ->{
+            return userController.getAllUsers();
+        });
 
+        router.addRoute("GET", "/users/{id}", (req) -> {
+            String id = req.getPathParams().get("id");
+            return userController.getUserById(id);
+        });
 
-        Router router = new Router(userController);
+        router.addRoute("POST", "/users", (req) -> {
+            return userController.createUser(req.getBody());
+        });
 
         HttpServer server = new HttpServer(router);
         server.start(8080);
+
     }
 }
