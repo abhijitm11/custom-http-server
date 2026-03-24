@@ -1,7 +1,5 @@
 package server;
 
-import controller.UserController;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +57,6 @@ public class Router {
             String pathPart = actualPathParts[i];
 
             if (patternPart.startsWith("{") && patternPart.endsWith("}")) {
-
                 String key = patternPart.substring(1, patternPart.length() - 1);
                 params.put(key, pathPart);
 
