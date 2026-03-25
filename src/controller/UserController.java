@@ -68,9 +68,12 @@ public class UserController {
     }
 
     public String getUserById(String id) {
+        if(id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("User ID is not defined");
+        }
         User user = userService.getUserById(id);
         if(user == null) {
-            return "User not found!";
+            throw new IllegalArgumentException("User not found");
         }
         return user.toString();
     }

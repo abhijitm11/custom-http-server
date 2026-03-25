@@ -29,8 +29,15 @@ public class Router {
 
             if(pathParams !=null) {
                 request.setPathParams(pathParams);
-                String body = route.getRouteHandler().handle(request);
-                return buildResponse(200, body);
+                try {
+                    String body = route.getRouteHandler().handle(request);
+                    return buildResponse(200, body);
+                } catch (IllegalArgumentException e) {
+                    return buildResponse(400, e.getMessage());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return buildResponse(500, "Internal Server Error!");
+                }
             }
         }
         return buildResponse(404, "Not Found");            // Default: 404
@@ -71,12 +78,21 @@ public class Router {
     private String buildResponse(int statusCode, String body) {
 
         String statusText;
-        if (statusCode == 200) {
-            statusText = "OK";
-        } else if (statusCode == 201) {
-            statusText = "Created";
-        } else {
-            statusText = "Not Found";
+        switch (statusCode) {
+            case 201:
+                statusText = "Created";
+                break;
+            case 400:
+                statusText = "Bad Request";
+                break;
+            case 404:
+                statusText = "Not Found";
+                break;
+            case 500:
+                statusText = "Internal Server Error";
+                break;
+            default:
+                statusText = "OK";
         }
 
         return "HTTP/1.1 " + statusCode + " " + statusText + "\r\n" +
