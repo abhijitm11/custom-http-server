@@ -1,7 +1,9 @@
 package controller;
 
 import model.User;
+import server.HttpRequest;
 import service.UserService;
+import utils.JsonParser;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +22,7 @@ public class UserController {
 
     public String getAllUsers() {
         List<User> users = userService.getAllUsers();
-        return users.toString();
+        return toJson(users);
     }
 
     public String getUsers(Map<String, String> queryParams) {
@@ -31,13 +33,25 @@ public class UserController {
             if(user == null) {
                 return "User not found!";
             }
-            return user.toString();
+            return user.toJson();
         }
-        return userService.getAllUsers().toString();   // default: return all users
+        List<User> users = userService.getAllUsers();
+        return toJson(users);
     }
 
-    public String createUser(String body) {
-        Map<String, String> params = parseBody(body);
+    public String createUser(HttpRequest request) {
+        String contentType = request.getHeaders().get("Content-Type");
+        String body = request.getBody();
+
+        Map<String, String> params = new HashMap<>();
+
+        if (contentType != null) {
+            if (contentType.contains("application/json")) {
+                params = JsonParser.parse(body);
+            } else if (contentType.contains("text/plain")) {
+                params = parseBody(body);
+            }
+        }
 
         String name = params.get("name");
         String email = params.get("email");
@@ -45,8 +59,9 @@ public class UserController {
         if (name == null || email == null) {
             return "Invalid input";
         }
-        userService.createUser(name, email);
-        return "User created: " + name;
+        User user = userService.createUser(name, email);
+        return user.toJson();
+
     }
 
     // Generic body parser: Example input: "name=abhi&email=test@gmail.com"
@@ -75,6 +90,20 @@ public class UserController {
         if(user == null) {
             throw new IllegalArgumentException("User not found");
         }
-        return user.toString();
+        return user.toJson();
+    }
+
+    public String toJson(List<User> users) {
+        StringBuilder json = new StringBuilder("[");
+
+        for (int i = 0; i < users.size(); i++) {
+            json.append(users.get(i).toJson());
+            if (i < users.size() - 1) {
+                json.append(",");
+            }
+        }
+
+        json.append("]");
+        return json.toString();
     }
 }

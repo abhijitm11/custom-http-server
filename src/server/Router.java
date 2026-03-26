@@ -96,7 +96,7 @@ public class Router {
         }
 
         return "HTTP/1.1 " + statusCode + " " + statusText + "\r\n" +
-                "Content-Type: text/plain\r\n" +
+                "Content-Type: application/json\r\n" +
                 "Content-Length: " + body.length() + "\r\n" +
                 "\r\n" +
                 body;

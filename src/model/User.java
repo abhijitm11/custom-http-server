@@ -46,4 +46,12 @@ public class User {
                 ", email='" + email + '\'' +
                 '}';
     }
+
+    public String toJson() {
+        return "{"
+                + "\"id\":\"" + id + "\","
+                + "\"name\":\"" + name + "\","
+                + "\"email\":\"" + email + "\""
+                + "}";
+    }
 }

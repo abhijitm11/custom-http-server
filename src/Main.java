@@ -25,7 +25,7 @@ public class Main {
         });
 
         router.addRoute("POST", "/users", (req) -> {
-            return userController.createUser(req.getBody());
+            return userController.createUser(req);
         });
 
         HttpServer server = new HttpServer(router);
